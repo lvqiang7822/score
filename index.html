@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>专业技术人员继续教育学习成绩单</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --paper: #FBF9F4;
+    --card: #FFFFFF;
+    --ink: #26231F;
+    --ink-soft: #5C574F;
+    --line: #D9D3C6;
+    --line-strong: #A9A193;
+    --head: #2E3A45;
+    --seal: #9E2B25;
+    --accent-bg: #F3EEE3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #EFECE4;
+    color: var(--ink);
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 0 auto;
+    background: var(--paper);
+    min-height: 100vh;
+    padding: 40px 20px 56px;
+  }
+  /* ===== 抬头 ===== */
+  .masthead {
+    border-top: 3px solid var(--seal);
+    padding-top: 12px;
+    text-align: center;
+  }
+  .agency {
+    color: var(--seal);
+    font-family: "Noto Serif SC", "SimSun", serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.12em;
+  }
+  .title {
+    margin-top: 18px;
+    font-family: "Noto Serif SC", "SimSun", serif;
+    font-weight: 900;
+    font-size: clamp(24px, 4.5vw, 34px);
+    letter-spacing: 0.06em;
+  }
+  .subtitle {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+  }
+  .seal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    border: 1.5px solid var(--seal);
+    border-radius: 999px;
+    padding: 6px 18px;
+    color: var(--seal);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .seal-badge svg { flex: none; }
+  /* ===== 信息区 ===== */
+  .info {
+    margin-top: 26px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .info-item {
+    display: flex;
+    align-items: stretch;
+    min-height: 52px;
+    border-bottom: 1px solid var(--line);
+  }
+  .info-item:nth-child(odd) { border-right: 1px solid var(--line); }
+  .info-item:nth-last-child(-n+2) { border-bottom: none; }
+  .info-label {
+    flex: none;
+    width: 104px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-bg);
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .info-value {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .info-value.id {
+    font-family: "Consolas", "Courier New", monospace;
+    letter-spacing: 0.04em;
+  }
+  /* ===== 成绩表 ===== */
+  .table-wrap {
+    margin-top: 26px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  thead th {
+    background: var(--head);
+    color: #F5F2EA;
+    font-weight: 700;
+    padding: 11px 10px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    text-align: center;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.year, td.type {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  td.course { text-align: left; }
+  td.base { text-align: left; color: var(--ink-soft); }
+  td.score { font-family: "Consolas", "Courier New", monospace; }
+  td.hours { white-space: nowrap; }
+  td.total { font-weight: 700; color: var(--seal); white-space: nowrap; }
+  td.none {
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 14px 10px;
+    letter-spacing: 0.2em;
+  }
+  td.type-row { background: #FAF7F0; }
+  /* ===== 底部 ===== */
+  .foot {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-strong);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+  }
+  .foot .seal-line { color: var(--seal); font-weight: 700; letter-spacing: 0.06em; }
+  @media (max-width: 560px) {
+    .sheet { padding: 24px 12px 40px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-item:nth-child(odd) { border-right: none; }
+    .info-item { border-bottom: 1px solid var(--line); }
+    .info-item:last-child { border-bottom: none; }
+    .info-label { width: 92px; }
+    .agency { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ===== 抬头 ===== -->
+  <header class="masthead">
+    <div class="agency">陕西省专业技术人员继续教育管理平台</div>
+    <h1 class="title">专业技术人员继续教育学习成绩单</h1>
+    <div class="subtitle">继续教育学习成绩证明</div>
+    <div class="seal-badge">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M5.5 12h13M12 5.5c2.4 2.2 3.7 4.3 3.7 6.5s-1.3 4.3-3.7 6.5c-2.4-2.2-3.7-4.3-3.7-6.5s1.3-4.3 3.7-6.5z"></path>
+      </svg>
+      证书管理号 6100099015100
+    </div>
+  </header>
+
+  <!-- ===== 个人信息 ===== -->
+  <section class="info" aria-label="个人信息">
+    <div class="info-grid">
+      <div class="info-item"><div class="info-label">姓名</div><div class="info-value">吕强</div></div>
+      <div class="info-item"><div class="info-label">性别</div><div class="info-value">男</div></div>
+      <div class="info-item"><div class="info-label">身份证号</div><div class="info-value id">612728198111190211</div></div>
+      <div class="info-item"><div class="info-label">行政职务</div><div class="info-value">教育</div></div>
+      <div class="info-item"><div class="info-label">工作单位</div><div class="info-value">沙家店镇九年一贯制学校</div></div>
+      <div class="info-item"><div class="info-label">技术职称</div><div class="info-value">中小学二级教师</div></div>
+      <div class="info-item"><div class="info-label">现从事专业</div><div class="info-value">教育</div></div>
+      <div class="info-item"><div class="info-label">证书管理号</div><div class="info-value id">6100099015100</div></div>
+    </div>
+  </section>
+
+  <!-- ===== 成绩记录 ===== -->
+  <section class="table-wrap" aria-label="继续教育学习成绩">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>年度</th>
+            <th>科目类型</th>
+            <th>科目（课程）名称</th>
+            <th>培训（认证）基地</th>
+            <th>基地层级</th>
+            <th>考试成绩</th>
+            <th>完成学时</th>
+            <th>合计</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="year" rowspan="1">2013—2017</td>
+            <td colspan="6" class="none">无课程学习记录</td>
+            <td class="total">—</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="3">2018</td>
+            <td class="type-row" rowspan="3">公需课</td>
+            <td class="course">社会诚信体系建设</td>
+            <td class="base">陕西曲江新区人才交流有限公司继续教育基地</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">8.0 学时</td>
+            <td class="total" rowspan="3">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">全面深化改革 推进国家文明发展</td>
+            <td class="base">西安电子科技大学</td>
+            <td>国家级/省级</td>
+            <td class="score">92.0</td>
+            <td class="hours">8.0 学时</td>
+          </tr>
+          <tr>
+            <td class="course">加强法制建设 推进依法治国</td>
+            <td class="base">陕西曲江新区人才交流有限公司继续教育基地</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">8.0 学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="2">2019</td>
+            <td class="type-row" rowspan="2">公需课</td>
+            <td class="course">弘扬爱国奋斗精神，建功立业新时代</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">92.0</td>
+            <td class="hours">12.0 学时</td>
+            <td class="total" rowspan="2">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">生态文明建设与环境保护</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">93.0</td>
+            <td class="hours">12.0 学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="2">2019</td>
+            <td class="type-row" rowspan="2">专业课</td>
+            <td class="course">教师综合素质培养与提升</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">85.0</td>
+            <td class="hours">32.0 学时</td>
+            <td class="total" rowspan="2">56.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">人工智能与未来教育</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">98.0</td>
+            <td class="hours">24.0 学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="1">2020</td>
+            <td class="type-row">公需课</td>
+            <td class="course">弘扬延安精神、坚定理想信念</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">86.0</td>
+            <td class="hours">24.0 学时</td>
+            <td class="total">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="2">2020</td>
+            <td class="type-row" rowspan="2">专业课</td>
+            <td class="course">教育教学综合研究</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">98.0</td>
+            <td class="hours">24.0 学时</td>
+            <td class="total" rowspan="2">56.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">中外教育理论前沿</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">96.0</td>
+            <td class="hours">32.0 学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="1">2021</td>
+            <td class="type-row">公需课</td>
+            <td class="course">学习百年党史，领悟思想伟力</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">24.0 学时</td>
+            <td class="total">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="2">2021</td>
+            <td class="type-row" rowspan="2">专业课</td>
+            <td class="course">新时代师德师风建设</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">24.0 学时</td>
+            <td class="total" rowspan="2">56.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">教育的魅力及其趋势</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">32.0 学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="1">2022</td>
+            <td class="type-row">公需课</td>
+            <td class="course">开拓奋进新征程，建功立业新时代</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">24.0 学时</td>
+            <td class="total">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="1">2022</td>
+            <td class="type-row">专业课</td>
+            <td class="course">信息时代的现代教育技术</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">56.0 学时</td>
+            <td class="total">56.0<br>学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="1">2023</td>
+            <td class="type-row">公需课</td>
+            <td class="course">深入学习党的二十大精神，奋进中国式现代化新征程</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">24.0 学时</td>
+            <td class="total">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="2">2023</td>
+            <td class="type-row" rowspan="2">专业课</td>
+            <td class="course">教育智慧与教师职业成长力</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">16.0 学时</td>
+            <td class="total" rowspan="2">56.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">教育智慧与教师职业成长力</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">40.0 学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="2">2024</td>
+            <td class="type-row" rowspan="2">公需课</td>
+            <td class="course">专业技术人员能力素质提升</td>
+            <td class="base">免费课程资源</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">8.0 学时</td>
+            <td class="total" rowspan="2">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">党史党纪专题学习</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">16.0 学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="2">2024</td>
+            <td class="type-row" rowspan="2">专业课</td>
+            <td class="course">2024年AI时代教育技术应用与创新</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">40.0 学时</td>
+            <td class="total" rowspan="2">56.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">2024年AI时代教育技术应用与创新（面授）</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">98.0</td>
+            <td class="hours">16.0 学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="2">2025</td>
+            <td class="type-row" rowspan="2">公需课</td>
+            <td class="course">党的二十届三中全会精神解读与高质量发展</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">20.0 学时</td>
+            <td class="total" rowspan="2">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">专业技术人员综合素质拓展</td>
+            <td class="base">免费课程资源</td>
+            <td>省级</td>
+            <td class="score">94.0</td>
+            <td class="hours">4.0 学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="2">2025</td>
+            <td class="type-row" rowspan="2">专业课</td>
+            <td class="course">教育家精神与师德师风建设</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">40.0 学时</td>
+            <td class="total" rowspan="2">56.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">教育家精神与师德师风建设（面授）</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">88.0</td>
+            <td class="hours">16.0 学时</td>
+          </tr>
+
+          <tr>
+            <td class="year" rowspan="2">2026</td>
+            <td class="type-row" rowspan="2">公需课</td>
+            <td class="course">专业技术人员综合素质拓展</td>
+            <td class="base">免费课程资源</td>
+            <td>省级</td>
+            <td class="score">100.0</td>
+            <td class="hours">4.0 学时</td>
+            <td class="total" rowspan="2">24.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">立足新阶段、抢抓新机遇：党的二十届四中全会精神与“十五五”战略机遇解读</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">92.0</td>
+            <td class="hours">20.0 学时</td>
+          </tr>
+          <tr>
+            <td class="year" rowspan="2">2026</td>
+            <td class="type-row" rowspan="2">专业课</td>
+            <td class="course">2026新时期教师综合素质拓展与教学效能提升</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">92.0</td>
+            <td class="hours">40.0 学时</td>
+            <td class="total" rowspan="2">56.0<br>学时</td>
+          </tr>
+          <tr>
+            <td class="course">2026新时期教师综合素质拓展与教学效能提升（面授）</td>
+            <td class="base">西安仕源培训中心</td>
+            <td>省级</td>
+            <td class="score">86.0</td>
+            <td class="hours">16.0 学时</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 底部 ===== -->
+  <footer class="foot">
+    <span class="seal-line">陕西省专业技术人员继续教育管理平台</span>
+    <span>线上成绩单核验页 · 证书管理号 6100099015100</span>
+  </footer>
+
+</div>
+</body>
+</html>
